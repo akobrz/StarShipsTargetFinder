@@ -1,0 +1,149 @@
+import json
+import math
+
+my_user_name = 'Angrey'
+my_user_id = 2833456
+
+division_a_fleets = 8
+
+id_fleet_id = 0
+id_fleet_name = 1
+id_fleet_score = 2
+id_fleet_division = 3
+
+id_user_id = 0
+id_user_name = 1
+id_user_fleet = 2
+id_user_trophy = 3
+id_user_stars = 4
+id_user_rank = 5
+id_user_highest_trophy = 18
+id_user_battles_today = 19
+id_user_attack_wins = 11
+id_user_attack_losses = 12
+id_user_defence_wins = 14
+id_user_defence_losses = 15
+
+id_criteria_division = 0
+id_criteria_min_trophy = 1
+id_criteria_max_trophy = 2
+id_criteria_highest_trophy = 3
+id_criteria_stars = 4
+id_criteria_my_fleet = 5
+id_criteria_missing_player = 6
+id_criteria_missing_feelt = 7
+
+def main():
+
+
+    # https://drive.google.com/drive/folders/10wOZgAQk_0St2Y_jC3UW497LVpBNxWmP
+    f = open('data\\' + 'pss-top-100_20241129-235900.json')
+    data = json.load(f)
+    fleets = data['fleets']
+    fleets_names = []
+    for f in fleets[0:8]:
+        fleets_names.append(f[1])
+    users = data['users']
+
+
+    # fleet division, user_min_trophy, user_max_trophy, user_highest_trophy_ever, min_stars, my_fleet_id, user_min_trophy, user_highest_trophy_ever,
+    # 5015
+    criteria = [1, 4000, 5300, 5600, 11, 9343, 'abcde']
+
+    # display_top_players(fleets, users)
+    # display_all_players(fleets, users)
+    display_my_fleet_position(users, criteria)
+    # display_all_my_fleet(users, criteria)
+    select_fleets(fleets, users, criteria)
+    # display_missed_user(fleets, users, criteria[id_criteria_missing_player])
+
+
+def display_top_players(fleets, users):
+    print('\nDisplay only top players: \n')
+    top_users = [user for user in users if user[id_user_trophy] > 4950]
+    sorted_users = sorted(top_users, key=lambda user: user[id_user_name], reverse=False)
+
+    for user in sorted_users:
+        user_fleet = [fleet for fleet in fleets if fleet[id_fleet_id] == user[id_user_fleet]]
+        if len(user_fleet) > 0:
+            user_fleet_name = user_fleet[0][id_fleet_name]
+        else:
+            user_fleet_name = "-"
+        print('\t', user_fleet_name, '\t', user[id_user_name], '\t', user[id_user_trophy], '\t', user[id_user_highest_trophy])
+
+
+def display_all_players(fleets, users):
+    print('\nDisplay all players: \n')
+    for fleet in fleets[0:8]:
+        fleet_users = [user for user in users if user[id_user_fleet] == fleet[id_fleet_id]]
+
+        fleet_users = sorted(fleet_users, key=lambda user: user[id_user_name], reverse=False)
+
+        if len(fleet_users) > 0:
+            print(fleet[id_fleet_name])
+
+        for user in fleet_users:
+            user[id_user_stars] = math.floor(max(user[id_user_trophy] / 1000, user[id_user_stars] * 0.15))
+            print('\t', fleet[id_fleet_name], '\t', user[id_user_name], '\t', user[id_user_stars], '\t', user[id_user_trophy])
+
+
+def display_all_my_fleet(users, criteria):
+    fleet_users = [user for user in users if user[id_user_fleet] == criteria[id_criteria_my_fleet]]
+
+    fleet_users = sorted(fleet_users, key=lambda user: user[id_user_stars], reverse=True)
+
+    for (i, user) in enumerate(fleet_users):
+        print(user[id_user_name], 'is with', user[id_user_stars], 'stars')
+
+
+def display_missed_user(fleets, users, fragment):
+    print('\nLocate missing hero: \n')
+    for fleet in fleets[0:8]:
+        fleet_users = [user for user in users if fragment in user[id_user_name] and user[id_user_fleet] == fleet[id_fleet_id]]
+        if len(fleet_users) > 0:
+            print(fleet[id_fleet_name])
+
+        for user in fleet_users:
+            user[id_user_stars] = math.floor(max(user[id_user_trophy] / 1000, user[id_user_stars] * 0.15))
+            print('\t', fleet[id_fleet_name], '\t', user[id_user_name], '\t', user[id_user_stars], '\t', user[id_user_trophy])
+
+
+def display_my_fleet_position(users, criteria):
+    fleet_users = [user for user in users if user[id_user_fleet] == criteria[id_criteria_my_fleet]]
+
+    for user in fleet_users:
+        user[id_user_stars] = math.floor(max(user[id_user_trophy] / 1000, user[id_user_stars] * 0.15))
+
+    fleet_users = sorted(fleet_users, key=lambda user: user[id_user_stars], reverse=True)
+
+    for (i, user) in enumerate(fleet_users):
+        if (user[id_user_id] == my_user_id):
+            print('\nAngrey is on the position', i, 'with', user[id_user_stars], 'stars\n')
+
+def select_fleets(fleets, users, criteria):
+    for fleet in fleets[0:8]:
+        fleet_id = fleet[id_fleet_id]
+
+        if fleet_id != criteria[id_criteria_my_fleet]:
+            fleet_users = [user for user in users
+                           if user[id_user_fleet] == fleet_id
+                           and user[id_user_trophy] in range(criteria[id_criteria_min_trophy], criteria[id_criteria_max_trophy])
+                            and user[id_user_highest_trophy] <= criteria[id_criteria_highest_trophy]]
+
+
+            if len(fleet_users) > 0:
+                print(fleet[id_fleet_name])
+
+                for user in fleet_users:
+                    user[id_user_stars] = math.floor(max(user[id_user_trophy]/1000, user[id_user_stars] * 0.15))
+
+                fleet_users = sorted(fleet_users, key=lambda user: user[id_user_name], reverse=False)
+
+                for user in fleet_users:
+                    if user[id_user_stars] >= criteria[id_criteria_stars] and user[id_user_fleet] != criteria[id_criteria_my_fleet]:
+                        ratio = math.floor(user[id_user_attack_wins] / (user[id_user_attack_losses] + user[id_user_attack_wins]) * 100)
+                        print('\t', fleet[id_fleet_name], '\t', user[id_user_name], '\t', user[id_user_stars], '\t', user[id_user_trophy])
+
+
+if __name__ == '__main__':
+    main()

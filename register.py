@@ -6,44 +6,9 @@ from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
 
-my_user_name = 'Angrey'
-my_user_id = 2833456
+from common import pretty_label, id_fleet_id, id_player_fleet, id_player_trophy, id_player_id, battle_directory, \
+    id_player_name, id_fleet_name, data_directory, results, battle_log, player_min_trophy, color, YELLOW
 
-division_a_fleets = 8
-
-id_fleet_id = 0
-id_fleet_name = 1
-id_fleet_score = 2
-id_fleet_division = 3
-
-id_player_id = 0
-id_player_name = 1
-id_player_fleet = 2
-id_player_trophy = 3
-id_player_stars = 4
-id_player_rank = 5
-id_player_highest_trophy = 18
-id_player_battles_today = 19
-id_player_attack_wins = 11
-id_player_attack_losses = 12
-id_player_defence_wins = 14
-id_player_defence_losses = 15
-
-id_criteria_division = 0
-id_criteria_min_trophy = 1
-id_criteria_max_trophy = 2
-id_criteria_highest_trophy = 3
-id_criteria_stars = 4
-id_criteria_my_fleet = 5
-id_criteria_missing_player = 6
-id_criteria_missing_feelt = 7
-
-data_directory = 'data\\'
-battle_directory = 'battles\\'
-battle_log = 'log.txt'
-results = ['win', 'lose', 'draw', 'escape', 'timeout']
-
-player_min_trophy = 4800
 
 def register():
     data_file = load_last_file()
@@ -56,6 +21,7 @@ def register():
         result = registration(fleets, users)
         if (result == -1):
             break
+
 
 def filter_fleets(data_json):
     all_fleets = data_json['fleets']
@@ -71,9 +37,11 @@ def filter_fleets(data_json):
             fleets.append(f)
     return fleets
 
+
 def filter_players(data_json):
     all_players = data_json['users']
     return [p for p in all_players if p[id_player_trophy] > player_min_trophy]
+
 
 def registration(fleets, players):
     fleet_id = resolve_fleet(fleets)
@@ -85,6 +53,7 @@ def registration(fleets, players):
     selected_fleet = [fleet for fleet in fleets if fleet[id_fleet_id] == fleet_id]
     selected_player = [player for player in players if player[id_player_id] == player_id]
     return resolve_battle(selected_fleet, selected_player)
+
 
 def resolve_battle(selected_fleet, selected_player):
     selected_result = results[resolve_result()]
@@ -120,7 +89,7 @@ def resolve_player(fleet_id, players):
     if (player_2_select == -1):
         return -1
     selected = players_names[player_2_select]
-    print("\nPlayer selected: " + selected)
+    print("\nPlayer selected: " + color(selected, YELLOW))
     for p in players:
         if p[id_player_name].rstrip() == selected.rstrip():
             return p[id_player_id]
@@ -137,7 +106,7 @@ def resolve_fleet(fleets):
     if (fleet_2_select == -1):
         return -1
     selected = fleets_names[fleet_2_select]
-    print("\nFleet selected: " + selected)
+    print("\nFleet selected: " + color(selected, YELLOW))
     for f in fleets:
         if f[id_fleet_name].rstrip() == selected.rstrip():
             return f[id_fleet_id]
@@ -222,7 +191,7 @@ def display_columns(max_len, column1, column2, column3, column4):
 def create_column(index, values):
     column = []
     for id, name in enumerate(values):
-        to_append = (str(index + id).zfill(2) + " " + name)[:30]
+        to_append = (str(index + id).zfill(2) + " " + pretty_label(name))[:30]
         column.append(to_append)
     return column
 

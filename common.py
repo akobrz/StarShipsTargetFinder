@@ -30,7 +30,48 @@ id_criteria_my_fleet = 5
 id_criteria_missing_player = 6
 id_criteria_missing_feelt = 7
 
+id_log_date = 0
+id_log_fleet = 1
+id_log_player = 2
+id_log_result = 3
+
 player_min_trophy = 4800
 
 battle_directory = 'battles\\'
+data_directory = 'data\\'
 battle_log = 'log.txt'
+
+empty = ""
+
+#Colors
+R = "\033[0;31;40m" #RED
+G = "\033[0;32;40m" # GREEN
+Y = "\033[0;33;40m" # Yellow
+B = "\033[0;34;40m" # Blue
+N = "\033[0m" # Reset
+
+BLACK = '\033[30m'
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BLUE = '\033[34m'
+MAGENTA = '\033[35m'
+CYAN = '\033[36m'
+WHITE = '\033[37m'
+UNDERLINE = '\033[4m'
+RESET = '\033[0m'
+
+battle_log = 'log.txt'
+results = ['win', 'lose', 'draw', 'escape', 'timeout']
+
+def pretty_label(name):
+    new_name = ''
+    for c in name:
+        if ord(c) < 55000:
+            new_name += c
+        else:
+            new_name += '.'
+    return new_name
+
+def color(label, color):
+    return color + label + RESET

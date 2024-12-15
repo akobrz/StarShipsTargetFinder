@@ -4,44 +4,9 @@ from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
 
+from common import G, R, Y, id_player_id, id_player_name, id_fleet_id, id_fleet_name, battle_directory, battle_log
 from register import data_directory
 
-my_user_name = 'Angrey'
-my_user_id = 2833456
-
-division_a_fleets = 8
-
-id_fleet_id = 0
-id_fleet_name = 1
-id_fleet_score = 2
-id_fleet_division = 3
-
-id_player_id = 0
-id_player_name = 1
-id_player_fleet = 2
-id_player_trophy = 3
-id_player_stars = 4
-id_player_rank = 5
-id_player_highest_trophy = 18
-id_player_battles_today = 19
-id_player_attack_wins = 11
-id_player_attack_losses = 12
-id_player_defence_wins = 14
-id_player_defence_losses = 15
-
-id_criteria_division = 0
-id_criteria_min_trophy = 1
-id_criteria_max_trophy = 2
-id_criteria_highest_trophy = 3
-id_criteria_stars = 4
-id_criteria_my_fleet = 5
-id_criteria_missing_player = 6
-id_criteria_missing_feelt = 7
-
-player_min_trophy = 4800
-
-battle_directory = 'battles\\'
-battle_log = 'log.txt'
 
 def log():
     data_file = load_last_file()
@@ -75,14 +40,17 @@ def display_log(log, fleets, players):
     table.right_padding_width = 5
     table.left_padding_width = 2
     table.align = "l"
-
-    for entry in log[-25:]:
+    for entry in log[-50:]:
         entry_date = str(entry[0])
         entry_fleet = get_fleet_name(int(entry[1]), fleets)
         entry_player = get_player_name(int(entry[2]), players)
         entry_result = entry[3]
-        table.add_row([entry_date, entry_fleet, entry_player, entry_result])
-
+        if entry_result == "win":
+            table.add_row([entry_date, entry_fleet, entry_player, G + entry_result])
+        elif entry_result == "lose":
+            table.add_row([entry_date, entry_fleet, entry_player, R + entry_result])
+        else:
+            table.add_row([entry_date, entry_fleet, entry_player, Y + entry_result])
     print(table)
 
 def get_player_name(id, players):

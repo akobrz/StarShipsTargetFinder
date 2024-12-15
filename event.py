@@ -1,54 +1,12 @@
 import json
-import common
-import log
 from os import system, listdir
 from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
-
+from common import G, R, Y, id_player_id, id_player_name, id_fleet_id, id_fleet_name, battle_directory, battle_log, \
+    id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty
 from register import data_directory
 
-my_user_name = 'Angrey'
-my_user_id = 2833456
-
-division_a_fleets = 8
-
-id_fleet_id = 0
-id_fleet_name = 1
-id_fleet_score = 2
-id_fleet_division = 3
-
-id_player_id = 0
-id_player_name = 1
-id_player_fleet = 2
-id_player_trophy = 3
-id_player_stars = 4
-id_player_rank = 5
-id_player_highest_trophy = 18
-id_player_battles_today = 19
-id_player_attack_wins = 11
-id_player_attack_losses = 12
-id_player_defence_wins = 14
-id_player_defence_losses = 15
-
-id_criteria_division = 0
-id_criteria_min_trophy = 1
-id_criteria_max_trophy = 2
-id_criteria_highest_trophy = 3
-id_criteria_stars = 4
-id_criteria_my_fleet = 5
-id_criteria_missing_player = 6
-id_criteria_missing_feelt = 7
-
-id_log_date = 0
-id_log_fleet = 1
-id_log_player = 2
-id_log_result = 3
-
-player_min_trophy = 4800
-
-battle_directory = 'battles\\'
-battle_log = 'log.txt'
 
 def event():
     data_file = load_last_file()
@@ -87,21 +45,15 @@ def return_menu():
     return int(choice)
 
 def display_event(statistics, fleets):
-    # fleets_names = []
-    # for f in fleets:
-    #     fleets_names.append(f[id_fleet_name])
-
-    table = ColorTable(["Fleet", "Player", "Score", "Battles"], theme=Themes.OCEAN)
+    table = ColorTable(["Fleet", "*", "Player", "Score", "Battles"], theme=Themes.OCEAN)
     table.right_padding_width = 1
     table.left_padding_width = 1
     table.align = "l"
-
     statistics.sort(key=lambda element: element[3])
     statistics.sort(key=lambda element: element[5])
-
     for entry in statistics:
-        if entry[1] > 0:
-            table.add_row([entry[5], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
+        if entry[1] / entry[2] > 0.66:
+            table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
 
     print(table)
 
@@ -114,9 +66,10 @@ def build_statistics(log, players, fleets):
         player_name = get_player_name(id, players)
         player_fleet_id = get_fleet_id(id, players)
         player_fleet_name = get_fleet_name(player_fleet_id, fleets)
+        player_stars = get_player_stars(id, players)
         if is_fleet_in_event(player_fleet_id, fleets):
-            statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name])
-
+            player_name = pretty_label(player_name)
+            statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars])
     return statistics
 
 def count_wins(player_id, log):
@@ -136,17 +89,25 @@ def get_log_players(log):
             result.append(entry[id_log_player])
     return result
 
+def get_player_stars(id, players):
+    for p in players:
+        if (int(id)) == p[id_player_id]:
+            return p[id_player_stars]
+    return empty
+
 def get_player_name(id, players):
     for p in players:
         if int(id) == p[id_player_id]:
             return p[id_player_name]
-    return ""
+    return empty
 
 def get_fleet_name(id, fleets):
+    if id == None:
+        return empty
     for f in fleets:
         if int(id) == f[id_fleet_id]:
             return f[id_fleet_name]
-    return ""
+    return empty
 
 def get_fleet_id(id, players):
     for p in players:

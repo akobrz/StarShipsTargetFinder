@@ -7,13 +7,19 @@ from common import G, R, Y, id_player_id, id_player_name, id_fleet_id, id_fleet_
     id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty
 from register import data_directory
 
+event_win = True
 
-def event():
+def event(win):
+    global event_win
+    event_win = win
     data_file = load_last_file()
     data_json = json.load(data_file)
     players = get_players(data_json)
     angrey_fleet_id = find_angrey(players)[id_player_fleet]
-    fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
+    if event_win == True:
+        fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
+    else:
+        fleets = [fleet for fleet in get_fleets(data_json)[:8]]
     log = read_from_file()
     s = build_statistics(log, players, fleets)
 
@@ -52,7 +58,9 @@ def display_event(statistics, fleets):
     statistics.sort(key=lambda element: element[3])
     statistics.sort(key=lambda element: element[5])
     for entry in statistics:
-        if entry[1] / entry[2] > 0.66:
+        if event_win and entry[1] / entry[2] > 0.66:
+            table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
+        if not event_win and entry[1] / entry[2] <= 0.66:
             table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
 
     print(table)

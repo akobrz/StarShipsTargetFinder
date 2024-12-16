@@ -75,3 +75,9 @@ def pretty_label(name):
 
 def color(label, color):
     return color + label + RESET
+
+def find_angrey(players):
+    for player in players:
+        if player[id_player_id] == my_user_id:
+            return player
+    return None

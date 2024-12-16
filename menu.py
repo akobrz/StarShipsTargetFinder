@@ -6,7 +6,7 @@ from event import event
 from log import log
 from register import register
 
-menus = ['log', 'register', 'event', 'exit']
+menus = ['log', 'register', 'event / win', 'event / loss','exit']
 
 def menu():
     while True:
@@ -21,8 +21,10 @@ def menu():
         if (choice == 1):
             register()
         if (choice == 2):
-            event()
+            event(True)
         if (choice == 3):
+            event(False)
+        if (choice == 4):
             exit(0)
 
 def resolve_menu():

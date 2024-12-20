@@ -4,28 +4,21 @@ from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
 from common import G, R, Y, id_player_id, id_player_name, id_fleet_id, id_fleet_name, battle_directory, battle_log, \
-    id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty
+    id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty, players_in_list
 from register import data_directory
 
-event_win = True
-
-def event(win):
-    global event_win
-    event_win = win
+def tournament():
     data_file = load_last_file()
     data_json = json.load(data_file)
     players = get_players(data_json)
     angrey_fleet_id = find_angrey(players)[id_player_fleet]
-    if event_win == True:
-        fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
-    else:
-        fleets = [fleet for fleet in get_fleets(data_json)[:8]]
+    fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
     log = read_from_file()
     s = build_statistics(log, players, fleets)
 
     while True:
         system('cls')
-        print('\nPixel Starships Top Fleets\n')
+        print('\nPixel Starships Tournament Win Players\n')
         display_event(s, fleets)
         if (return_menu() == -1):
             break
@@ -51,19 +44,37 @@ def return_menu():
     return int(choice)
 
 def display_event(statistics, fleets):
-    table = ColorTable(["Fleet", "*", "Player", "Score", "Battles"], theme=Themes.OCEAN)
+    fleet_names = [fleet[id_fleet_name] for fleet in fleets]
+    table = ColorTable(fleet_names, theme=Themes.OCEAN)
     table.right_padding_width = 1
     table.left_padding_width = 1
     table.align = "l"
     statistics.sort(key=lambda element: element[3])
     statistics.sort(key=lambda element: element[5])
-    for entry in statistics:
-        if event_win and entry[1] / entry[2] > 0.66:
-            table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
-        if not event_win and entry[1] / entry[2] <= 0.66:
-            table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
+
+    col0 = build_column(statistics, fleets[0][id_fleet_id])
+    col1 = build_column(statistics, fleets[1][id_fleet_id])
+    col2 = build_column(statistics, fleets[2][id_fleet_id])
+    col3 = build_column(statistics, fleets[3][id_fleet_id])
+    col4 = build_column(statistics, fleets[4][id_fleet_id])
+    col5 = build_column(statistics, fleets[5][id_fleet_id])
+    col6 = build_column(statistics, fleets[6][id_fleet_id])
+
+    for i in range(0, players_in_list):
+        table.add_row([col0[i], col1[i], col2[i], col3[i], col4[i], col5[i], col6[i]])
 
     print(table)
+
+
+def build_column(statistics, fleet_id):
+    result = []
+    players = [s for s in statistics if s[4] == fleet_id and s[2] > 0 and s[1] / s[2] == 1][:players_in_list]
+    for player in players:
+        result.append(player[3])
+    while len(result) < players_in_list:
+        result.append("")
+    return result
+
 
 def build_statistics(log, players, fleets):
     ids = get_log_players(log)
@@ -77,13 +88,17 @@ def build_statistics(log, players, fleets):
         player_stars = get_player_stars(id, players)
         if is_fleet_in_event(player_fleet_id, fleets):
             player_name = pretty_label(player_name)
+            # player id, win battles, all battles, player name, player fleet id, player fleet name, player stars
             statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars])
     return statistics
 
 def count_wins(player_id, log):
     wins = 0
     battles = 0
-    for entry in log:
+    last_battles = [entry for entry in log if entry[id_log_player] == player_id][-3:]
+    last_battles.sort(key=lambda element: element[0])
+
+    for entry in last_battles:
         if entry[id_log_player] == player_id and entry[id_log_result] == 'win':
             wins += 1
         if entry[id_log_player] == player_id:
@@ -141,4 +156,4 @@ def load_last_file():
 
 
 if __name__ == '__main__':
-    event(True)
+    tournament()

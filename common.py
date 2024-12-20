@@ -37,6 +37,8 @@ id_log_result = 3
 
 player_min_trophy = 4800
 
+players_in_list = 30
+
 battle_directory = 'battles\\'
 data_directory = 'data\\'
 battle_log = 'log.txt'
@@ -62,6 +64,7 @@ UNDERLINE = '\033[4m'
 RESET = '\033[0m'
 
 battle_log = 'log.txt'
+tournament_log = 'tournament.txt'
 results = ['win', 'lose', 'draw', 'escape', 'timeout']
 
 def pretty_label(name):

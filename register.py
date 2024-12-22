@@ -70,8 +70,8 @@ def write_to_file(selected_fleet, selected_player, selected_result, current_date
 
 def resolve_result():
     table = ColorTable(["ID", "RESULT"], theme=Themes.OCEAN)
-    table.right_padding_width = 5
-    table.left_padding_width = 2
+    table.right_padding_width = 1
+    table.left_padding_width = 1
     table.align = "l"
 
     for id, result in enumerate(results):
@@ -171,8 +171,8 @@ def display_names(names):
 
 def display_columns(max_len, column1, column2, column3, column4):
     table = ColorTable(["COL1", "COL2", "COL3", "COL4"], theme=Themes.OCEAN)
-    table.right_padding_width = 2
-    table.left_padding_width = 2
+    table.right_padding_width = 1
+    table.left_padding_width = 1
     table.align = "l"
     table.header = False
 

@@ -46,8 +46,8 @@ def return_menu():
 def display_event(statistics, fleets):
     fleet_names = [fleet[id_fleet_name] for fleet in fleets]
     table = ColorTable(fleet_names, theme=Themes.OCEAN)
-    table.right_padding_width = 1
-    table.left_padding_width = 1
+    table.right_padding_width = 0
+    table.left_padding_width = 0
     table.align = "l"
     statistics.sort(key=lambda element: element[3])
     statistics.sort(key=lambda element: element[5])
@@ -70,9 +70,9 @@ def build_column(statistics, fleet_id):
     result = []
     players = [s for s in statistics if s[4] == fleet_id and s[2] > 0 and s[1] / s[2] == 1][:players_in_list]
     for player in players:
-        result.append(player[3])
+        result.append(player[3] + ' ' + str(player[6]))
     while len(result) < players_in_list:
-        result.append("")
+        result.append('')
     return result
 
 

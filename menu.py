@@ -37,8 +37,8 @@ def resolve_menu():
 
 def print_menu():
     table = ColorTable(["ID", "MENU"], theme=Themes.OCEAN)
-    table.right_padding_width = 5
-    table.left_padding_width = 2
+    table.right_padding_width = 1
+    table.left_padding_width = 1
     table.align = "l"
     print('\nPixel Starships Register\n')
     for id, item in enumerate(menus):

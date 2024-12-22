@@ -37,8 +37,8 @@ def return_menu():
 
 def display_log(log, fleets, players):
     table = ColorTable(["DATE", "FLEET", "PLAYER", "RESULT"], theme=Themes.OCEAN)
-    table.right_padding_width = 5
-    table.left_padding_width = 2
+    table.right_padding_width = 1
+    table.left_padding_width = 1
     table.align = "l"
     for entry in log[-50:]:
         entry_date = str(entry[0])

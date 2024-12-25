@@ -5,9 +5,10 @@ from prettytable.colortable import ColorTable, Themes
 from event import event
 from log import log
 from register import register
+from register_tournament import register_tournament
 from tournament import tournament
 
-menus = ['log', 'register', 'top fleets / win', 'top fleets / loss','tournament', 'exit']
+menus = ['log', 'register battle', 'top fleets / win', 'top fleets / loss','tournament targets', 'tournament battle', 'exit']
 
 def menu():
     while True:
@@ -28,6 +29,8 @@ def menu():
         if choice == 4:
             tournament()
         if choice == 5:
+            register_tournament()
+        if choice == 6:
             exit(0)
 
 def resolve_menu():
@@ -48,7 +51,7 @@ def print_menu():
 
 def input_menu():
     choice = input('\nEnter option from the menu (q to quit): ')
-    if choice not in ('0', '1', '2', '3', '4', '5', 'q'):
+    if choice not in ('0', '1', '2', '3', '4', '5', '6', 'q'):
         exit(0)
     return int(choice)
 

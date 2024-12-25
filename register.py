@@ -3,7 +3,6 @@ import math
 from datetime import datetime
 from os import listdir, system
 from os.path import isfile, join
-from common import find_angrey, MAGENTA
 
 from prettytable.colortable import ColorTable, Themes
 

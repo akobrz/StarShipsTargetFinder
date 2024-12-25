@@ -1,11 +1,16 @@
 import json
+import math
+from datetime import datetime, timedelta
 from os import system, listdir
 from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
-from common import G, R, Y, id_player_id, id_player_name, id_fleet_id, id_fleet_name, battle_directory, battle_log, \
-    id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty, players_in_list
+
+from common import id_player_id, id_player_name, id_fleet_id, id_fleet_name, battle_directory, battle_log, \
+    id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty, players_in_list, \
+    tournament_log, id_log_date, filter_top_players, id_player_trophy, color, YELLOW
 from register import data_directory
+
 
 def tournament():
     data_file = load_last_file()
@@ -13,15 +18,23 @@ def tournament():
     players = get_players(data_json)
     angrey_fleet_id = find_angrey(players)[id_player_fleet]
     fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
+    players = filter_top_players(fleets, players)
     log = read_from_file()
+    tournament_log = read_from_tournament_log()
+    log = filter_log(log, tournament_log)
     s = build_statistics(log, players, fleets)
 
     while True:
         system('cls')
-        print('\nPixel Starships Tournament Win Players\n')
+        print('\nPixel Starships Tournament Targets\n')
         display_event(s, fleets)
         if (return_menu() == -1):
             break
+
+def filter_log(log, tournament_log):
+    event_delta = timedelta(days=8)
+    tournament_log = [entry for entry in tournament_log if entry[id_log_date] > (datetime.today() - event_delta).strftime('%Y-%m-%d')]
+    return [entry for entry in log if entry[id_log_player] not in [entry[id_log_player] for entry in tournament_log]]
 
 def find_angrey(players):
     for player in players:
@@ -80,6 +93,9 @@ def build_statistics(log, players, fleets):
     ids = get_log_players(log)
     statistics = []
 
+    for user in players:
+        user[id_player_stars] = math.floor(max(user[id_player_trophy] / 1000, user[id_player_stars] * 0.15))
+
     for id in ids:
         result = count_wins(id, log)
         player_name = get_player_name(id, players)
@@ -115,7 +131,7 @@ def get_log_players(log):
 def get_player_stars(id, players):
     for p in players:
         if (int(id)) == p[id_player_id]:
-            return p[id_player_stars]
+            return color(p[id_player_stars], YELLOW)
     return empty
 
 def get_player_name(id, players):
@@ -146,6 +162,11 @@ def is_fleet_in_event(id, fleets):
 
 def read_from_file():
     with open(battle_directory + battle_log) as f:
+        lines = [line.strip().split('|') for line in f]
+    return lines
+
+def read_from_tournament_log():
+    with open(battle_directory + tournament_log) as f:
         lines = [line.strip().split('|') for line in f]
     return lines
 

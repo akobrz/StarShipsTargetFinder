@@ -63,7 +63,6 @@ WHITE = '\033[37m'
 UNDERLINE = '\033[4m'
 RESET = '\033[0m'
 
-battle_log = 'log.txt'
 tournament_log = 'tournament.txt'
 results = ['win', 'lose', 'draw', 'escape', 'timeout']
 
@@ -76,11 +75,14 @@ def pretty_label(name):
             new_name += '.'
     return new_name
 
-def color(label, color):
-    return color + label + RESET
+def color(label, c):
+    return c + str(label) + RESET
 
 def find_angrey(players):
     for player in players:
         if player[id_player_id] == my_user_id:
             return player
     return None
+
+def filter_top_players(fleets, players):
+    return [user for user in players if user[id_player_fleet] in [fleet[id_fleet_id] for fleet in fleets]]

@@ -6,7 +6,7 @@ from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
 
-from common import find_angrey, tournament_log
+from common import find_angrey, tournament_log, filter_top_players
 from common import pretty_label, id_fleet_id, id_player_fleet, id_player_trophy, id_player_id, battle_directory, \
     id_player_name, id_fleet_name, data_directory, results, player_min_trophy, color, YELLOW
 
@@ -17,6 +17,7 @@ def register_tournament():
     fleets = filter_fleets(data_json)[:8]
     users = filter_players(data_json)
     fleets = filter_top_fleets(fleets, users)
+    users = filter_top_players(fleets, users)
     while True:
         system('cls')
         print('\nPixel Starships Tournament Register\n')
@@ -52,7 +53,7 @@ def filter_fleets(data_json):
 
 def filter_players(data_json):
     all_players = data_json['users']
-    return [p for p in all_players if p[id_player_trophy] > player_min_trophy]
+    return [p for p in all_players if p[id_player_fleet]]
 
 
 def registration(fleets, players):

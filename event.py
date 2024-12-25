@@ -16,10 +16,7 @@ def event(win):
     data_json = json.load(data_file)
     players = get_players(data_json)
     angrey_fleet_id = find_angrey(players)[id_player_fleet]
-    if event_win == True:
-        fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
-    else:
-        fleets = [fleet for fleet in get_fleets(data_json)[:8]]
+    fleets = [fleet for fleet in get_fleets(data_json)[:8] if fleet[id_fleet_id] != angrey_fleet_id]
     log = read_from_file()
     s = build_statistics(log, players, fleets)
 

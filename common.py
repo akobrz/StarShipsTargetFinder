@@ -36,8 +36,9 @@ id_log_player = 2
 id_log_result = 3
 
 player_min_trophy = 4800
+player_max_trophy = 5600
 
-players_in_list = 30
+players_in_list = 20
 
 battle_directory = 'battles\\'
 data_directory = 'data\\'
@@ -85,4 +86,4 @@ def find_angrey(players):
     return None
 
 def filter_top_players(fleets, players):
-    return [user for user in players if user[id_player_fleet] in [fleet[id_fleet_id] for fleet in fleets]]
+    return [user for user in players if user[id_player_trophy] in range(player_min_trophy, player_max_trophy) and user[id_player_fleet] in [fleet[id_fleet_id] for fleet in fleets]]

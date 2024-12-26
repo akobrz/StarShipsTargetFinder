@@ -62,8 +62,6 @@ def display_event(statistics, fleets):
     table.right_padding_width = 0
     table.left_padding_width = 0
     table.align = "l"
-    statistics.sort(key=lambda element: element[3])
-    statistics.sort(key=lambda element: element[5])
 
     col0 = build_column(statistics, fleets[0][id_fleet_id])
     col1 = build_column(statistics, fleets[1][id_fleet_id])
@@ -81,7 +79,13 @@ def display_event(statistics, fleets):
 
 def build_column(statistics, fleet_id):
     result = []
-    players = [s for s in statistics if s[4] == fleet_id and s[2] > 0 and s[1] / s[2] == 1][:players_in_list]
+
+    players = [s for s in statistics if s[4] == fleet_id and s[2] > 0 and s[1] / s[2] == 1]
+    players.sort(key=lambda element: element[6], reverse=True)
+    players = players[:players_in_list]
+    players.sort(key=lambda element: element[3])
+
+    # [:players_in_list]
     for player in players:
         result.append(player[3] + ' ' + str(player[6]))
     while len(result) < players_in_list:

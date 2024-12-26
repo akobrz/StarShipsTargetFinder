@@ -6,7 +6,7 @@ from os.path import isfile, join
 
 from prettytable.colortable import ColorTable, Themes
 
-from common import find_angrey, tournament_log, filter_top_players
+from common import find_angrey, tournament_log, filter_top_players, battle_log
 from common import pretty_label, id_fleet_id, id_player_fleet, id_player_trophy, id_player_id, battle_directory, \
     id_player_name, id_fleet_name, data_directory, results, player_min_trophy, color, YELLOW
 
@@ -15,13 +15,13 @@ def register_tournament():
     data_file = load_last_file()
     data_json = json.load(data_file)
     fleets = filter_fleets(data_json)[:8]
-    users = filter_players(data_json)
-    fleets = filter_top_fleets(fleets, users)
-    users = filter_top_players(fleets, users)
+    players = filter_players(data_json)
+    fleets = filter_top_fleets(fleets, players)
+    players = filter_top_players(fleets, players)
     while True:
         system('cls')
         print('\nPixel Starships Tournament Register\n')
-        result = registration(fleets, users)
+        result = registration(fleets, players)
         if (result == -1):
             break
 
@@ -81,7 +81,8 @@ def resolve_battle(selected_fleet, selected_player):
 def write_to_file(selected_fleet, selected_player, selected_result, current_date):
     with open(battle_directory + tournament_log, 'a+') as f:
         f.write(str(current_date) + "|" + str(selected_fleet[0][id_fleet_id]) + "|" + str(selected_player[0][id_player_id]) + "|" + selected_result + '\n')
-
+    with open(battle_directory + battle_log, 'a+') as f:
+        f.write(str(current_date) + "|" + str(selected_fleet[0][id_fleet_id]) + "|" + str(selected_player[0][id_player_id]) + "|" + selected_result + '\n')
 
 def resolve_result():
     table = ColorTable(["ID", "RESULT"], theme=Themes.OCEAN)

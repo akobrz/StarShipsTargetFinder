@@ -100,14 +100,17 @@ def build_statistics(log, players, fleets):
     for user in players:
         user[id_player_stars] = math.floor(max(user[id_player_trophy] / 1000, user[id_player_stars] * 0.15))
 
+    players = [player for player in players if player[id_player_stars] > 4]
+
     for id in ids:
         result = count_wins(id, log)
         player_name = get_player_name(id, players)
         player_fleet_id = get_fleet_id(id, players)
         player_fleet_name = get_fleet_name(player_fleet_id, fleets)
         player_stars = get_player_stars(id, players)
-        if is_fleet_in_event(player_fleet_id, fleets):
+        if is_fleet_in_event(player_fleet_id, fleets) and player_stars > 4:
             player_name = pretty_label(player_name)
+            player_stars = color(player_stars, YELLOW)
             # player id, win battles, all battles, player name, player fleet id, player fleet name, player stars
             statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars])
     return statistics
@@ -135,7 +138,7 @@ def get_log_players(log):
 def get_player_stars(id, players):
     for p in players:
         if (int(id)) == p[id_player_id]:
-            return color(p[id_player_stars], YELLOW)
+            return p[id_player_stars]
     return empty
 
 def get_player_name(id, players):

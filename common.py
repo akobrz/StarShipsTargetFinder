@@ -36,7 +36,7 @@ id_log_player = 2
 id_log_result = 3
 
 player_min_trophy = 4800
-player_max_trophy = 5600
+player_max_trophy = 5800
 
 players_in_list = 20
 

@@ -70,9 +70,10 @@ def registration(fleets, players):
 
 
 def resolve_battle(selected_fleet, selected_player):
-    selected_result = results[resolve_result()]
-    if (selected_result == -1):
+    result = resolve_result()
+    if result == -1:
         return -1
+    selected_result = results[resolve_result()]
     current_date = datetime.today().strftime('%Y-%m-%d')
     write_to_file(selected_fleet, selected_player, selected_result, current_date)
     return 0

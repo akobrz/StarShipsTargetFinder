@@ -87,7 +87,8 @@ def build_column(statistics, fleet_id):
 
     # [:players_in_list]
     for player in players:
-        result.append(player[3] + ' ' + str(player[6]))
+        player_stars = color(player[6], YELLOW)
+        result.append(player[3] + ' ' + player_stars)
     while len(result) < players_in_list:
         result.append('')
     return result
@@ -110,7 +111,7 @@ def build_statistics(log, players, fleets):
         player_stars = get_player_stars(id, players)
         if is_fleet_in_event(player_fleet_id, fleets) and player_stars > 4:
             player_name = pretty_label(player_name)
-            player_stars = color(player_stars, YELLOW)
+            # player_stars = color(player_stars, YELLOW)
             # player id, win battles, all battles, player name, player fleet id, player fleet name, player stars
             statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars])
     return statistics

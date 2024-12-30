@@ -8,7 +8,9 @@ from prettytable.colortable import ColorTable, Themes
 
 from common import id_player_id, id_player_name, id_fleet_id, id_fleet_name, battle_directory, battle_log, \
     id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty, players_in_list, \
-    tournament_log, id_log_date, filter_top_players, id_player_trophy, color, YELLOW
+    tournament_log, id_log_date, filter_top_players, id_player_trophy, color, YELLOW, WHITE, CYAN_BRIGHT, CYAN, RED, \
+    id_stat_color, id_stat_player_name, id_stat_stars, BLUE_BRIGHT, BLUE, GREEN_BRIGHT, GREEN, MAGENTA_BRIGHT, MAGENTA, \
+    RED_BRIGHT, YELLOW_BRIGHT
 from register import data_directory
 
 
@@ -85,10 +87,10 @@ def build_column(statistics, fleet_id):
     players = players[:players_in_list]
     players.sort(key=lambda element: element[3])
 
-    # [:players_in_list]
     for player in players:
-        player_stars = color(player[6], YELLOW)
-        result.append(player[3] + ' ' + player_stars)
+        player_stars = color(player[id_stat_stars], YELLOW)
+        player_name = color(player[id_stat_player_name], player[id_stat_color])
+        result.append(player_name + ' ' + player_stars)
     while len(result) < players_in_list:
         result.append('')
     return result
@@ -109,12 +111,22 @@ def build_statistics(log, players, fleets):
         player_fleet_id = get_fleet_id(id, players)
         player_fleet_name = get_fleet_name(player_fleet_id, fleets)
         player_stars = get_player_stars(id, players)
+        player_color = get_player_color(result[1])
         if is_fleet_in_event(player_fleet_id, fleets) and player_stars > 4:
             player_name = pretty_label(player_name)
-            # player_stars = color(player_stars, YELLOW)
-            # player id, win battles, all battles, player name, player fleet id, player fleet name, player stars
-            statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars])
+            # player id, win battles, all battles, player name, player fleet id, player fleet name, player stars, color
+            statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars, player_color])
     return statistics
+
+
+def get_player_color(wins):
+    if wins == 1:
+        return WHITE
+    if wins == 2:
+        return CYAN_BRIGHT
+    if wins == 3:
+        return CYAN
+    return RED
 
 def count_wins(player_id, log):
     wins = 0

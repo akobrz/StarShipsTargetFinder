@@ -1,3 +1,7 @@
+from rich.console import Console
+from rich.text import Text
+import rich
+
 my_user_name = 'Angrey'
 my_user_id = 2833456
 
@@ -35,6 +39,15 @@ id_log_fleet = 1
 id_log_player = 2
 id_log_result = 3
 
+id_stat_player_id = 0
+id_stat_wins = 1
+id_stat_battles = 2
+id_stat_player_name = 3
+id_stat_fleet_id = 4
+id_stat_fleet_name = 5
+id_stat_stars = 6
+id_stat_color = 7
+
 player_min_trophy = 4800
 player_max_trophy = 5800
 
@@ -55,11 +68,17 @@ N = "\033[0m" # Reset
 
 BLACK = '\033[30m'
 RED = '\033[31m'
+RED_BRIGHT = '\033[91m'
 GREEN = '\033[32m'
+GREEN_BRIGHT = '\033[92m'
 YELLOW = '\033[33m'
+YELLOW_BRIGHT = '\033[93m'
 BLUE = '\033[34m'
+BLUE_BRIGHT = '\033[94m'
 MAGENTA = '\033[35m'
+MAGENTA_BRIGHT = '\033[95m'
 CYAN = '\033[36m'
+CYAN_BRIGHT = '\033[96m'
 WHITE = '\033[37m'
 UNDERLINE = '\033[4m'
 RESET = '\033[0m'
@@ -87,3 +106,21 @@ def find_angrey(players):
 
 def filter_top_players(fleets, players):
     return [user for user in players if user[id_player_trophy] in range(player_min_trophy, player_max_trophy) and user[id_player_fleet] in [fleet[id_fleet_id] for fleet in fleets]]
+
+def tester():
+    # print('\033[38;2;246;45;112mHello!\033[0m')
+    print(RED + 'TEST\n' + RESET)
+    print(MAGENTA + 'TEST\n' + RESET)
+    print(GREEN + 'TEST\n' + RESET)
+    print(GREEN_BRIGHT + 'TEST\n' + RESET)
+    print(WHITE + 'TEST\n' + RESET)
+    print(YELLOW + 'TEST\n' + RESET)
+    print(WHITE + 'TEST\n' + RESET)
+    print(BLUE_BRIGHT + 'TEST\n' + RESET)
+    print(BLUE + 'TEST\n' + RESET)
+    print(CYAN + 'TEST\n' + RESET)
+    print(CYAN_BRIGHT + 'TEST\n' + RESET)
+    print(WHITE + 'TEST\n' + RESET)
+
+if __name__ == '__main__':
+    tester()

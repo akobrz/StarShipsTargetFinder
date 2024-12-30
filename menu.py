@@ -4,6 +4,7 @@ from prettytable.colortable import ColorTable, Themes
 
 from event import event
 from log import log
+from position import position
 from register import register
 from register_tournament import register_tournament
 from tournament import tournament
@@ -13,6 +14,7 @@ menus = ['log', 'register battle', 'top fleets / win', 'top fleets / loss','tour
 def menu():
     while True:
         system('cls')
+        position()
         choice = resolve_menu()
         if choice == -1:
             break

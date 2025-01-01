@@ -49,7 +49,7 @@ id_stat_stars = 6
 id_stat_color = 7
 
 player_min_trophy = 4800
-player_max_trophy = 5800
+player_max_trophy = 6500
 
 players_in_list = 10
 

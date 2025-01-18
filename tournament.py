@@ -10,7 +10,7 @@ from common import id_player_id, id_player_name, id_fleet_id, id_fleet_name, bat
     id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty, players_in_list, \
     tournament_log, id_log_date, filter_top_players, id_player_trophy, color, YELLOW, WHITE, CYAN_BRIGHT, CYAN, RED, \
     id_stat_color, id_stat_player_name, id_stat_stars, BLUE_BRIGHT, BLUE, GREEN_BRIGHT, GREEN, MAGENTA_BRIGHT, MAGENTA, \
-    RED_BRIGHT, YELLOW_BRIGHT
+    RED_BRIGHT, YELLOW_BRIGHT, id_stat_fleet_id, id_stat_battles, id_stat_wins
 from register import data_directory
 
 
@@ -82,17 +82,43 @@ def display_event(statistics, fleets):
 def build_column(statistics, fleet_id):
     result = []
 
-    players = [s for s in statistics if s[4] == fleet_id and s[2] > 0 and s[1] / s[2] == 1]
-    players.sort(key=lambda element: element[6], reverse=True)
-    players = players[:players_in_list]
-    players.sort(key=lambda element: element[3])
+    fleet_stats = [s for s in statistics if s[id_stat_fleet_id] == fleet_id and s[id_stat_battles] > 0 and s[id_stat_wins] / s[id_stat_battles] == 1]
+
+    wins_3_5 = [s for s in fleet_stats if s[id_stat_battles] == 3 and s[id_stat_stars] > 4]
+    wins_2_5 = [s for s in fleet_stats if s[id_stat_battles] == 2 and s[id_stat_stars] > 4]
+    wins_1_5 = [s for s in fleet_stats if s[id_stat_battles] == 1 and s[id_stat_stars] > 4]
+
+    wins_3_4 = [s for s in fleet_stats if s[id_stat_battles] == 3 and s[id_stat_stars] < 5]
+    wins_2_4 = [s for s in fleet_stats if s[id_stat_battles] == 2 and s[id_stat_stars] < 5]
+    wins_1_4 = [s for s in fleet_stats if s[id_stat_battles] == 1 and s[id_stat_stars] < 5]
+
+    players = wins_3_5[:players_in_list]
+
+    if len(players) < players_in_list:
+        players.extend(wins_2_5[:(players_in_list-len(players))])
+
+    if len(players) < players_in_list:
+        players.extend(wins_3_4[:(players_in_list-len(players))])
+
+    if len(players) < players_in_list:
+        players.extend(wins_2_4[:(players_in_list-len(players))])
+
+    if len(players) < players_in_list:
+        players.extend(wins_1_5[:(players_in_list-len(players))])
+
+    if len(players) < players_in_list:
+        players.extend(wins_1_4[:(players_in_list-len(players))])
+
+    players.sort(key=lambda element: element[id_stat_player_name])
 
     for player in players:
         player_stars = color(player[id_stat_stars], YELLOW)
         player_name = color(player[id_stat_player_name], player[id_stat_color])
         result.append(player_name + ' ' + player_stars)
+
     while len(result) < players_in_list:
         result.append('')
+
     return result
 
 
@@ -103,7 +129,7 @@ def build_statistics(log, players, fleets):
     for user in players:
         user[id_player_stars] = math.floor(max(user[id_player_trophy] / 1000, user[id_player_stars] * 0.15))
 
-    players = [player for player in players if player[id_player_stars] > 4]
+    players = [player for player in players if player[id_player_stars] > 3]
 
     for id in ids:
         result = count_wins(id, log)
@@ -112,7 +138,7 @@ def build_statistics(log, players, fleets):
         player_fleet_name = get_fleet_name(player_fleet_id, fleets)
         player_stars = get_player_stars(id, players)
         player_color = get_player_color(result[1])
-        if is_fleet_in_event(player_fleet_id, fleets) and player_stars > 4:
+        if is_fleet_in_event(player_fleet_id, fleets) and player_stars > 3:
             player_name = pretty_label(player_name)
             # player id, win battles, all battles, player name, player fleet id, player fleet name, player stars, color
             statistics.append([result[0], result[1], result[2], player_name, player_fleet_id, player_fleet_name, player_stars, player_color])

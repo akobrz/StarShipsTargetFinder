@@ -51,7 +51,7 @@ id_stat_color = 7
 player_min_trophy = 4800
 player_max_trophy = 6500
 
-players_in_list = 10
+players_in_list = 15
 
 battle_directory = 'battles\\'
 data_directory = 'data\\'

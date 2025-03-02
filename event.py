@@ -55,9 +55,9 @@ def display_event(statistics, fleets):
     statistics.sort(key=lambda element: element[3])
     statistics.sort(key=lambda element: element[5])
     for entry in statistics:
-        if event_win and entry[1] / entry[2] > 0.66:
+        if event_win and entry[1] / entry[2] == 1:
             table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
-        if not event_win and entry[1] / entry[2] <= 0.66:
+        if not event_win and entry[1] / entry[2] < 1:
             table.add_row([entry[5], entry[6], entry[3], "%.0f" % (entry[1] * 100 / entry[2]) + "%", "(" + str(entry[1]) + "/" + str(entry[2]) + ")"])
 
     print(table)

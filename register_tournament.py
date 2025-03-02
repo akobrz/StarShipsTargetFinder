@@ -182,7 +182,6 @@ def display_names(names):
         names_4 = create_column(max_len3, names[max_len3:])
     else:
         names_4 = []
-
     display_columns(max_len, names_1, names_2, names_3, names_4)
 
 def display_columns(max_len, column1, column2, column3, column4):

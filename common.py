@@ -48,10 +48,12 @@ id_stat_fleet_name = 5
 id_stat_stars = 6
 id_stat_color = 7
 
-player_min_trophy = 4800
+player_min_trophy = 4000
 player_max_trophy = 6500
 
 players_in_list = 15
+min_players_in_list = 3
+players_min_stars = 5
 
 battle_directory = 'battles\\'
 data_directory = 'data\\'

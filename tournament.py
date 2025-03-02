@@ -3,6 +3,7 @@ import math
 from datetime import datetime, timedelta
 from os import system, listdir
 from os.path import isfile, join
+from statistics import mean
 
 from prettytable.colortable import ColorTable, Themes
 
@@ -10,7 +11,7 @@ from common import id_player_id, id_player_name, id_fleet_id, id_fleet_name, bat
     id_player_fleet, id_log_player, my_user_id, id_log_result, pretty_label, id_player_stars, empty, players_in_list, \
     tournament_log, id_log_date, filter_top_players, id_player_trophy, color, YELLOW, WHITE, CYAN_BRIGHT, CYAN, RED, \
     id_stat_color, id_stat_player_name, id_stat_stars, BLUE_BRIGHT, BLUE, GREEN_BRIGHT, GREEN, MAGENTA_BRIGHT, MAGENTA, \
-    RED_BRIGHT, YELLOW_BRIGHT, id_stat_fleet_id, id_stat_battles, id_stat_wins
+    RED_BRIGHT, YELLOW_BRIGHT, id_stat_fleet_id, id_stat_battles, id_stat_wins, min_players_in_list
 from register import data_directory
 
 
@@ -84,30 +85,29 @@ def build_column(statistics, fleet_id):
 
     fleet_stats = [s for s in statistics if s[id_stat_fleet_id] == fleet_id and s[id_stat_battles] > 0 and s[id_stat_wins] / s[id_stat_battles] == 1]
 
-    wins_3_5 = [s for s in fleet_stats if s[id_stat_battles] == 3 and s[id_stat_stars] > 4]
-    wins_2_5 = [s for s in fleet_stats if s[id_stat_battles] == 2 and s[id_stat_stars] > 4]
-    wins_1_5 = [s for s in fleet_stats if s[id_stat_battles] == 1 and s[id_stat_stars] > 4]
+    average_stars = round(mean([s[id_stat_stars] for s in fleet_stats]), 0)
 
-    wins_3_4 = [s for s in fleet_stats if s[id_stat_battles] == 3 and s[id_stat_stars] < 5]
-    wins_2_4 = [s for s in fleet_stats if s[id_stat_battles] == 2 and s[id_stat_stars] < 5]
-    wins_1_4 = [s for s in fleet_stats if s[id_stat_battles] == 1 and s[id_stat_stars] < 5]
+    wins_3_5 = [s for s in fleet_stats if s[id_stat_battles] == 3 and s[id_stat_stars] >= average_stars]
+    wins_2_5 = [s for s in fleet_stats if s[id_stat_battles] == 2 and s[id_stat_stars] >= average_stars]
+    wins_1_5 = [s for s in fleet_stats if s[id_stat_battles] == 1 and s[id_stat_stars] >= average_stars]
+
+    wins_3_4 = [s for s in fleet_stats if s[id_stat_battles] == 3 and s[id_stat_stars] < average_stars]
+    wins_2_4 = [s for s in fleet_stats if s[id_stat_battles] == 2 and s[id_stat_stars] < average_stars]
+    wins_1_4 = [s for s in fleet_stats if s[id_stat_battles] == 1 and s[id_stat_stars] < average_stars]
 
     players = wins_3_5[:players_in_list]
-
     if len(players) < players_in_list:
         players.extend(wins_2_5[:(players_in_list-len(players))])
-
-    if len(players) < players_in_list:
-        players.extend(wins_3_4[:(players_in_list-len(players))])
-
-    if len(players) < players_in_list:
-        players.extend(wins_2_4[:(players_in_list-len(players))])
-
     if len(players) < players_in_list:
         players.extend(wins_1_5[:(players_in_list-len(players))])
 
-    if len(players) < players_in_list:
-        players.extend(wins_1_4[:(players_in_list-len(players))])
+    if len(players) < min_players_in_list:
+        if len(players) < players_in_list:
+            players.extend(wins_3_4[:(players_in_list-len(players))])
+        if len(players) < players_in_list:
+            players.extend(wins_2_4[:(players_in_list-len(players))])
+        if len(players) < players_in_list:
+            players.extend(wins_1_4[:(players_in_list-len(players))])
 
     players.sort(key=lambda element: element[id_stat_player_name])
 
